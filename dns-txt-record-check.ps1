@@ -1,3 +1,26 @@
+<#
+.SYNOPSIS
+    DNS TXT record scanner for SPF, DKIM, and DMARC validation as part of an OSINT investigation.
+
+.DESCRIPTION
+    This PowerShell script is designed to query and analyze TXT records for a given domain, focusing on:
+    - SPF (Sender Policy Framework)
+    - DKIM (DomainKeys Identified Mail)
+    - DMARC (Domain-based Message Authentication, Reporting and Conformance)
+
+    The goal is to identify missing, malformed, or misconfigured email authentication records and document them for reporting purposes to the client.
+
+.AUTHOR
+    Guy Zwerdling
+
+.CREATED
+    2025-07-16
+
+.NOTES
+    This script is intended for cybersecurity professionals performing reconnaissance or security assessments.
+    Make sure 'Resolve-DnsName' is available (PowerShell 5+ on Windows or compatible environment).
+#>
+
 param(
     [switch]$spf,
     [switch]$dkim,
