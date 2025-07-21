@@ -280,29 +280,31 @@ function Check-DMARC {
     # Validate policy (p)
     $validPolicies = @('none', 'quarantine', 'reject')
     if ($tags.ContainsKey('p')) {
-        if ($validPolicies -contains $tags['p'].ToLower()) {
-            Write-DmarcTag "p" $tags['p'] "valid"
-        }
-        else {
-            Write-DmarcTag "p" $tags['p'] "error"
-        }
-    }
-    else {
-        Write-DmarcTag "p" "Missing" "error"
-    }
+    $policy = $tags['p'].ToLower()
+		if ($validPolicies -contains $policy) {
+			if ($policy -eq 'none') {
+				Write-DmarcTag "p" $tags['p'] "warn"
+			} else {
+				Write-DmarcTag "p" $tags['p'] "valid"
+			}
+		} else {
+			Write-DmarcTag "p" $tags['p'] "error"
+		}
+	}
 
     # Validate subdomain policy (sp) – optional
     if ($tags.ContainsKey('sp')) {
-        if ($validPolicies -contains $tags['sp'].ToLower()) {
-            Write-DmarcTag "sp" $tags['sp'] "valid"
-        }
-        else {
-            Write-DmarcTag "sp" $tags['sp'] "error"
-        }
-    }
-    else {
-        Write-DmarcTag "sp" "Not set (default applies)" "warn"
-    }
+    $subPolicy = $tags['sp'].ToLower()
+		if ($validPolicies -contains $subPolicy) {
+			if ($subPolicy -eq 'none') {
+				Write-DmarcTag "sp" $tags['sp'] "warn"
+			} else {
+				Write-DmarcTag "sp" $tags['sp'] "valid"
+			}
+		} else {
+			Write-DmarcTag "sp" $tags['sp'] "error"
+		}
+	}
 
     # Validate rua (aggregate reports) – optional but recommended
     if ($tags.ContainsKey('rua')) {
@@ -333,31 +335,37 @@ function Check-DMARC {
         Write-DmarcTag "pct" "100 (default)" "warn"
     }
 
-    # Validate aspf (SPF alignment) – optional
-    if ($tags.ContainsKey('aspf')) {
-        if ($tags['aspf'] -in @('r', 's')) {
-            Write-DmarcTag "aspf" $tags['aspf'] "valid"
-        }
-        else {
-            Write-DmarcTag "aspf" $tags['aspf'] "error"
-        }
-    }
-    else {
-        Write-DmarcTag "aspf" "Not set (default r)" "warn"
-    }
+	# Validate aspf (SPF alignment) – optional
+	if ($tags.ContainsKey('aspf')) {
+		if ($tags['aspf'] -eq 's') {
+			Write-DmarcTag "aspf" $tags['aspf'] "valid"
+		}
+		elseif ($tags['aspf'] -eq 'r') {
+			Write-DmarcTag "aspf" $tags['aspf'] "warn"
+		}
+		else {
+			Write-DmarcTag "aspf" $tags['aspf'] "error"
+		}
+	}
+	else {
+		Write-DmarcTag "aspf" "Not set (default r)" "warn"
+	}
 
-    # Validate adkim (DKIM alignment) – optional
-    if ($tags.ContainsKey('adkim')) {
-        if ($tags['adkim'] -in @('r', 's')) {
-            Write-DmarcTag "adkim" $tags['adkim'] "valid"
-        }
-        else {
-            Write-DmarcTag "adkim" $tags['adkim'] "error"
-        }
-    }
-    else {
-        Write-DmarcTag "adkim" "Not set (default r)" "warn"
-    }
+	# Validate adkim (DKIM alignment) – optional
+	if ($tags.ContainsKey('adkim')) {
+		if ($tags['adkim'] -eq 's') {
+			Write-DmarcTag "adkim" $tags['adkim'] "valid"
+		}
+		elseif ($tags['adkim'] -eq 'r') {
+			Write-DmarcTag "adkim" $tags['adkim'] "warn"
+		}
+		else {
+			Write-DmarcTag "adkim" $tags['adkim'] "error"
+		}
+	}
+	else {
+		Write-DmarcTag "adkim" "Not set (default r)" "warn"
+	}
 
     # Validate fo (failure reporting options) – optional
     if ($tags.ContainsKey('fo')) {
